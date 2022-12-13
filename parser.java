@@ -9,6 +9,7 @@ import java.util.Hashtable;
 
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxStylesheet;
 import org.jgraph.JGraph;
 import org.jgraph.graph.DefaultEdge;
@@ -17,15 +18,16 @@ import org.jgraph.graph.DefaultGraphModel;
 import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphModel;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.*;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.model.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.Stack; 
+import java.util.Stack;
 
 class Token {
     String token_value;
@@ -197,30 +199,33 @@ class window3 implements ActionListener{
         display = new JTextArea();
         display.setEditable(false); // set textArea non-editable
         this.flag = flag;
+        mxGraph graph = new mxGraph();
+        ArrayList<String> arr = Main.scanner(code_token);
         if(flag == 0){
-//             display.setText();
+                String s="";
+                for(int i = 0; i < arr.size(); i++){
+                    s+=arr.get(i);
+
+                }
+                System.out.println(s);
+                if(Main.parser(arr).name.equals("error")){
+                    display.setText("Incorrect Code");
+                }
+                else {
+                    display.setText(s);
+                    graph = (mxGraph) Main.tree(Main.parser(arr), 300, 0)[0];
+                }
         }
         else if (flag == 1){
-           display.setText(code_token);
+            if(Main.parser(arr).name.equals("error")){
+                display.setText("Incorrect Code");
+            }
+            else {
+                display.setText(code_token);
+                graph = (mxGraph) Main.tree(Main.parser(arr), 300, 0)[0];
+            }
         }
-//        mxGraph graph = new mxGraph();
-//        Object parent = graph.getDefaultParent();
-//        graph.getModel().beginUpdate();
-//        try {
-//            Object v1 = graph.insertVertex(parent, null, "Hello",  20, 20, 80, 30 , "shape=ellipse");
-//            Object v2 = graph.insertVertex(parent, null, "World!", 240, 150,
-//                    80, 30);
-//            Object v3 = graph.insertVertex(parent, null, "World!", 210, 250,
-//                    50, 30);
-//            Object v4 = graph.insertVertex(parent, null, "World!", 270, 250,
-//                    50, 30, "shape=ellipse");
-//            graph.insertEdge(parent, null, "", v1, v2);
-//            graph.insertEdge(parent, null, "", v2, v3);
-//            graph.insertEdge(parent, null, "", v2, v4);
-//        } finally {
-//            graph.getModel().endUpdate();
-//        }
-//        mxGraphComponent graphComponent = new mxGraphComponent(graph);
+        mxGraphComponent graphComponent = new mxGraphComponent(graph);
         scroll2 = new JScrollPane(graphComponent);
         scroll2.setMinimumSize(new Dimension(600, 600));
         scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -248,42 +253,90 @@ class window3 implements ActionListener{
 public class Main{
     static String code;
     static String token;
-    static Stack<Token> scanner_output = new Stack<>();  
+    static Object root1;
+    static Object root2;
+    static Stack<Token> scanner_output = new Stack<>();
     public static void main(String[] args) {
         window1 win1 = new window1();
 
     }
-    public mxGraph tree(Node n, int x, int y){
+    public static Object[] tree(Node n, int x, int y){
+        Object result[] = new Object[2];
         mxGraph graph = new mxGraph();
         Object parent = graph.getDefaultParent();
-        Object v1,v2;
+        Object v1 = new mxPoint();
+        Object v2 = new mxPoint();
+        mxGraph graphTemp = new mxGraph();
         if(n == null){
             return null;
         }
-        if(n.type == "exp"){
-             v1 = graph.insertVertex(parent, null, n.name+"\n"+n.value,  x, y, 80, 30 , "shape=ellipse");
-        }
-        else{
-             v1 = graph.insertVertex(parent, null, n.name+"\n"+n.value,  x, y, 80, 30);
-        }
-        if (n.sibling != null) {
-            y = y + 30;
-            if(n.sibling.type == "exp"){
-                v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+n.sibling.value,  x, y, 80, 30 , "shape=ellipse");
+        if(n.type.equals("exp")){
+            if(n.value != null){
+                v1 = graph.insertVertex(parent, null, n.name+"\n"+"("+n.value+")",  x, y, 80, 30 , "shape=ellipse");
+                root1 = v1;
             }
             else{
-                v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+n.sibling.value,  x, y, 80, 30);
+                v1 = graph.insertVertex(parent, null, n.name,  x, y, 80, 30 , "shape=ellipse");
+                root1 = v1;
+            }
+        }
+        else{
+            if(n.value != null){
+                v1 = graph.insertVertex(parent, null, n.name+"\n"+"("+n.value+")",  x, y, 80, 30);
+                root1 = v1;
+            }
+            else{
+                v1 = graph.insertVertex(parent, null, n.name,  x, y, 80, 30);
+                root1 = v1;
+            }
+        }
+        if (n.sibling != null) {
+            x = x + 100;
+            if(n.sibling.type.equals("exp")){
+                if(n.sibling.value != null){
+                    v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+"("+n.sibling.value+")",  x, y, 80, 30, "shape=ellipse");
+                    root2 = v2;
+                }
+                else{
+                    v2 = graph.insertVertex(parent, null, n.sibling.name,  x, y, 80, 30, "shape=ellipse");
+                    root2 = v2;
+                }
+            }
+            else{
+                if(n.sibling.value != null){
+                    v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+"("+n.sibling.value+")",  x, y, 80, 30);
+                    root2 = v2;
+                }
+                else{
+                    v2 = graph.insertVertex(parent, null, n.sibling.name,  x, y, 80, 30);
+                    root2 = v2;
+                }
             }
             graph.insertEdge(parent, null, "", v1, v2);
         }
-        for(int i = 0; i < n.children.size(); i++){
-            graph.insertEdge(parent, null, "", graph, tree(n.children.get(i),x+30,y));
+        if(n.children != null) {
+            for (int i = 0; i < n.children.size(); i++) {
+
+                Object temp = tree(n.children.get(i), x + 90, y + 40)[1];
+                graphTemp = new mxGraph();
+                graphTemp = (mxGraph) tree(n.children.get(i), x + 90, y + 40)[0];
+                graph.insertEdge(parent, null, "", v1, temp);
+            }
         }
-        for(int i = 0; i < n.sibling.children.size(); i++){
-            graph.insertEdge(parent, null, "", graph, tree(n.sibling.children.get(i),x+30,y));
+        if(n.sibling != null) {
+            if (n.sibling.children != null) {
+                for (int i = 0; i < n.sibling.children.size(); i++) {
+                    Object temp = tree(n.sibling.children.get(i), x + 90, y + 40)[1];
+                    graphTemp = new mxGraph();
+                    graphTemp = (mxGraph) tree(n.sibling.children.get(i), x + 90, y + 40)[0];
+                    graph.insertEdge(parent, null, "", v2, temp);
+                }
+            }
         }
         graph.getModel().endUpdate();
-        return graph;
+        result[0] = graph;
+        result[1] = v1;
+        return result;
     }
     public static ArrayList<String> scanner(String s) {
         ArrayList<String> arr = new ArrayList<String>();
@@ -295,7 +348,7 @@ public class Main{
         String type = "";
         for (int i = 0; i < len; i++) {
             if (state == "START") {
-                 if(program.charAt(i) == 'i'){
+                if(program.charAt(i) == 'i'){
                     state = "INRESERVEDWORDS";
                     substate = "IF";
                     i = i-1;
@@ -349,12 +402,12 @@ public class Main{
                             i = i-1;
                         }
 
-                        }
+                    }
                     else{
                         state = "INID";
                         i = i-1;
                     }
-                    }
+                }
 
 
 
@@ -368,7 +421,7 @@ public class Main{
                     substate = "WRITE";
                     i = i-1;
                 }
-                
+
                 else if ((program.charAt(i) == ';') || (program.charAt(i) == '<') || (program.charAt(i) == '=') || (program.charAt(i) == '+') || (program.charAt(i) == '-') || (program.charAt(i) == '*') || (program.charAt(i) == '/') || (program.charAt(i) == '(') || (program.charAt(i) == ')')) {
                     state = "INSYMBOL";
                     i = i - 1;
@@ -389,25 +442,25 @@ public class Main{
                 }
 
             }
-                           else if (state == "INRESERVEDWORDS"){
+            else if (state == "INRESERVEDWORDS"){
                 if(substate == "IF"){
                     if(i + 2 <= len) {
                         if (program.substring(i, i + 2).equals("if")) {
-                                token += "if";
-                                if (program.charAt(i + 2) == '\n' || program.charAt(i + 2) == ' ' || program.charAt(i + 2) == '\t' ) {
-                                    state = "DONE";
-                                    type = substate;
-                                    i = i + 2;
-                                }
-                                else if(program.charAt(i + 2) == '(' || program.charAt(i + 2) == '{'){
-                                    state = "DONE";
-                                    type = substate;
-                                    i = i + 1;
-                                }
-                                else {
-                                    state = "INID";
-                                    i = i + 1;
-                                }
+                            token += "if";
+                            if (program.charAt(i + 2) == '\n' || program.charAt(i + 2) == ' ' || program.charAt(i + 2) == '\t' ) {
+                                state = "DONE";
+                                type = substate;
+                                i = i + 2;
+                            }
+                            else if(program.charAt(i + 2) == '(' || program.charAt(i + 2) == '{'){
+                                state = "DONE";
+                                type = substate;
+                                i = i + 1;
+                            }
+                            else {
+                                state = "INID";
+                                i = i + 1;
+                            }
                         }
                         else{
                             i = i - 1;
@@ -489,7 +542,7 @@ public class Main{
                         state = "INID";
                         continue;
                     }
-             
+
                 }
                 else if (substate == "ELSE"){
                     if(i+4 < len){
@@ -557,7 +610,7 @@ public class Main{
 
                 }
                 else if (substate == "READ"){
-                     if(i+4 < len){
+                    if(i+4 < len){
                         if(program.substring(i,i+4).equals("read")){
                             token+="read";
                             if(program.charAt(i+4) == '\n' || program.charAt(i+4) == ' ' || program.charAt(i+4) == '\t'){
@@ -582,13 +635,13 @@ public class Main{
                             continue;
                         }
                     }
-                     else{
-                         i = i - 1;
-                         state = "INID";
-                         continue;
-                     }
+                    else{
+                        i = i - 1;
+                        state = "INID";
+                        continue;
+                    }
                 }
-                
+
 
                 else if(substate == "UNTIL"){
                     if(i+5 < len){
@@ -649,7 +702,7 @@ public class Main{
                     }
                 }
             }
-             else if (state == "INNUM") {
+            else if (state == "INNUM") {
                 if((program.charAt(i)>='0')&&(program.charAt(i)<='9')){
                     token = token + program.charAt(i);
                     type="NUMBER";
@@ -659,7 +712,7 @@ public class Main{
                     state="DONE";
                 }
             } else if (state == "INID") {
-                  if(((program.charAt(i)>='a')&&(program.charAt(i)<='z'))||((program.charAt(i)>='A')&&(program.charAt(i)<='Z'))){
+                if(((program.charAt(i)>='a')&&(program.charAt(i)<='z'))||((program.charAt(i)>='A')&&(program.charAt(i)<='Z'))){
                     token+=program.charAt(i);
                     type="IDENTIFIER";
                 }
@@ -669,7 +722,7 @@ public class Main{
                 }
 
             } else if (state == "INASSIGN") {
-                
+
                 if((program.charAt(i)==':') &&(program.charAt(i+1)=='=')){
                     i=i+1;
                     token+=":=";
@@ -678,7 +731,7 @@ public class Main{
                 }
 
             } else if (state == "INSYMBOL") {
-                
+
                 if(program.charAt(i)==';') {
                     token+=program.charAt(i);
                     type="SEMICOLON";
@@ -741,14 +794,14 @@ public class Main{
         }
         return arr;
     }
-      public static String read(String path) throws FileNotFoundException, IOException {
+    public static String read(String path) throws FileNotFoundException, IOException {
         String program = "";
         // File path is passed as parameter
         File file = new File(path);
         // Creating an object of BufferedReader class
         BufferedReader br
-            = new BufferedReader(new FileReader(file));
- 
+                = new BufferedReader(new FileReader(file));
+
         // Declaring a string variable
         String st;
         // Condition holds true till
@@ -758,338 +811,338 @@ public class Main{
 //        System.out.println(program);
         br.close();
         return program;
-  }
-   public static Node parser(ArrayList<String> input)
-   {
-       for (int i = input.size() - 1; i >= 0  ; i--)
-       {
-           String[] tv = input.get(i).split(" , "); //[value, type]
-           Token t = new Token(tv[0], tv[1].substring(0, tv[1].length() - 1));
-           scanner_output.push(t);
-       }
-       Node m=stmt_sequence();
-      return m; 
-   }
-   public static Node match(Token expected_token)
-   {
-       Node n = new Node();
-       if((!scanner_output.empty()) &&(scanner_output.peek().token_type.equals(expected_token.token_type)))
-       {
-           scanner_output.pop();
-           n.name = "accept";
-       }
-       else
-       {
-           n.name = "error";
-       }
-       return n;
-   }
+    }
+    public static Node parser(ArrayList<String> input)
+    {
+        for (int i = input.size() - 1; i >= 0  ; i--)
+        {
+            String[] tv = input.get(i).split(" , "); //[value, type]
+            Token t = new Token(tv[0], tv[1].substring(0, tv[1].length() - 1));
+            scanner_output.push(t);
+        }
+        Node m=stmt_sequence();
+        return m;
+    }
+    public static Node match(Token expected_token)
+    {
+        Node n = new Node();
+        if((!scanner_output.empty()) &&(scanner_output.peek().token_type.equals(expected_token.token_type)))
+        {
+            scanner_output.pop();
+            n.name = "accept";
+        }
+        else
+        {
+            n.name = "error";
+        }
+        return n;
+    }
     public static Node stmt_sequence(){
         Node n=new Node();
-        
+
         n = statement();
         Node temp=n;
-       if (n.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-       }
-              
+        if (n.name.equals("error")) {
+            return new Node("error", null, null, null, null);
+        }
 
-       while ((!scanner_output.empty()) &&(scanner_output.peek().token_type.equals("SEMICOLON"))) {
-           if (match(new Token(";", "SEMICOLON")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
-           Node s=statement();
-           if ( s.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           }
-           
-           temp.sibling=s;
-           temp=s;
 
-       }
-           
-       return n;
+        while ((!scanner_output.empty()) &&(scanner_output.peek().token_type.equals("SEMICOLON"))) {
+            if (match(new Token(";", "SEMICOLON")).name.equals("error")) {
+                return new Node("error", null, null, null, null);
+            }
+            Node s=statement();
+            if ( s.name.equals("error")) {
+                return new Node("error", null, null, null, null);
+            }
+
+            temp.sibling=s;
+            temp=s;
+
+        }
+
+        return n;
     }
-   public static Node statement(){
+    public static Node statement(){
         Node n=new Node();
         if((!scanner_output.empty())&& (scanner_output.peek().token_type.equals("IF"))){
             n=if_stmt();
             if ( n.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           }            
+                return new Node("error", null, null, null, null);
+            }
         }
         else if((!scanner_output.empty())&& (scanner_output.peek().token_type.equals("REPEAT"))){
             n=repeat_stmt();
             if ( n.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           }            
+                return new Node("error", null, null, null, null);
+            }
         }
         else if((!scanner_output.empty())&& (scanner_output.peek().token_type.equals("IDENTIFIER"))){
             n=assign_stmt();
             if ( n.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           }            
+                return new Node("error", null, null, null, null);
+            }
         }
         else if((!scanner_output.empty())&& (scanner_output.peek().token_type.equals("READ"))){
             n=read_stmt();
             if ( n.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           }            
+                return new Node("error", null, null, null, null);
+            }
         }
         else if((!scanner_output.empty())&& (scanner_output.peek().token_type.equals("WRITE"))){
             n=write_stmt();
             if ( n.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           }            
+                return new Node("error", null, null, null, null);
+            }
         }
         else{
-            return new Node("error", null, null, null, null);            
+            return new Node("error", null, null, null, null);
         }
-        
+
 
         return n;
     }
-   public static Node if_stmt(){
+    public static Node if_stmt(){
         Node n=new Node();
         if (match(new Token("if", "IF")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
+            return new Node("error", null, null, null, null);
+        }
         n.name="if";
         Node e=exp();
         if ( e.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           } 
+            return new Node("error", null, null, null, null);
+        }
         n.children.add(e);
         if (match(new Token("then", "THEN")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
+            return new Node("error", null, null, null, null);
+        }
         Node s=stmt_sequence();
         if ( s.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           } 
+            return new Node("error", null, null, null, null);
+        }
         n.children.add(s);
         if((!scanner_output.empty())&& (scanner_output.peek().token_type.equals("ELSE"))){
-           if (match(new Token("else", "ELSE")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
-           Node el=stmt_sequence();
+            if (match(new Token("else", "ELSE")).name.equals("error")) {
+                return new Node("error", null, null, null, null);
+            }
+            Node el=stmt_sequence();
             if (el.name.equals("error")) {
                 return new Node("error", null, null, null, null);
             }
             n.children.add(el);
-           
+
         }
         if (match(new Token("end", "END")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
+            return new Node("error", null, null, null, null);
+        }
         n.type="stmt";
 
         return n;
     }
-   
-   public static Node repeat_stmt(){
+
+    public static Node repeat_stmt(){
         Node n=new Node();
         if (match(new Token("repeat", "REPEAT")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
+            return new Node("error", null, null, null, null);
+        }
         n.name="repeat";
         Node s=stmt_sequence();
         if ( s.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           } 
+            return new Node("error", null, null, null, null);
+        }
         n.children.add(s);
         if (match(new Token("until", "UNTIL")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
-         Node e=exp();
+            return new Node("error", null, null, null, null);
+        }
+        Node e=exp();
         if ( e.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           }
+            return new Node("error", null, null, null, null);
+        }
         n.children.add(e);
         n.type="stmt";
 
         return n;
     }
-   public static Node assign_stmt(){
+    public static Node assign_stmt(){
         Node n=new Node();
         Token t=new Token();
         if(!scanner_output.empty())
             t=scanner_output.peek();
         if (match(new Token(null, "IDENTIFIER")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
+            return new Node("error", null, null, null, null);
+        }
         n.name="assign";
         n.value=t.token_value;
         if (match(new Token(":=", "ASSIGN")).name.equals("error")) {
-               return new Node("error", null, null, null, null);
-           }
+            return new Node("error", null, null, null, null);
+        }
         Node e=exp();
         if ( e.name.equals("error")) {
-           return new Node("error", null, null, null, null);
-           } 
+            return new Node("error", null, null, null, null);
+        }
         n.children.add(e);
         n.type="stmt";
         return n;
     }
     public static Node exp()
-   {
-       Node left = simple_exp();
-       if((left.name).equals("error"))
+    {
+        Node left = simple_exp();
+        if((left.name).equals("error"))
         {
-           left.name = "error";
+            left.name = "error";
             return left;
         }
-       Node root = left;
-       while((!scanner_output.empty()) && ((scanner_output.peek().token_value.equals("<")) || (scanner_output.peek().token_value.equals("="))))
-       {
-           Node nroot = new Node();
-           String v = scanner_output.peek().token_value;
-           nroot = match(scanner_output.peek());
-           if((nroot.name).equals("error"))
+        Node root = left;
+        while((!scanner_output.empty()) && ((scanner_output.peek().token_value.equals("<")) || (scanner_output.peek().token_value.equals("="))))
+        {
+            Node nroot = new Node();
+            String v = scanner_output.peek().token_value;
+            nroot = match(scanner_output.peek());
+            if((nroot.name).equals("error"))
             {
-               nroot.name = "error";
+                nroot.name = "error";
                 return nroot;
             }
-           nroot = new Node("op", v,  new ArrayList<Node>(),null, "exp");
-           Node right = simple_exp();
-           if((right.name).equals("error"))
+            nroot = new Node("op", v,  new ArrayList<Node>(),null, "exp");
+            Node right = simple_exp();
+            if((right.name).equals("error"))
             {
-               right.name = "error";
+                right.name = "error";
                 return right;
             }
-           nroot.children.add(root);
-           nroot.children.add(right);
-           root = nroot;
-       }
-       return root;
-   }
-   public static Node simple_exp()
-   {
-       Node left = term();
-       if((left.name).equals("error"))
+            nroot.children.add(root);
+            nroot.children.add(right);
+            root = nroot;
+        }
+        return root;
+    }
+    public static Node simple_exp()
+    {
+        Node left = term();
+        if((left.name).equals("error"))
         {
-           left.name = "error";
+            left.name = "error";
             return left;
         }
-       Node root = left;
-       while((!scanner_output.empty()) && ((scanner_output.peek().token_value.equals("+")) || (scanner_output.peek().token_value.equals("-"))))
-       {
-           Node nroot = new Node();
-           String v = scanner_output.peek().token_value;
-           //System.out.println("here 2");
-           nroot = match(scanner_output.peek());
-           //System.out.println("after: " +scanner_output.peek().token_value);
-           if((nroot.name).equals("error"))
+        Node root = left;
+        while((!scanner_output.empty()) && ((scanner_output.peek().token_value.equals("+")) || (scanner_output.peek().token_value.equals("-"))))
+        {
+            Node nroot = new Node();
+            String v = scanner_output.peek().token_value;
+            //System.out.println("here 2");
+            nroot = match(scanner_output.peek());
+            //System.out.println("after: " +scanner_output.peek().token_value);
+            if((nroot.name).equals("error"))
             {
-               nroot.name = "error";
+                nroot.name = "error";
                 return nroot;
             }
-           nroot = new Node("op", v, new ArrayList<Node>(),null, "exp");
-           Node right = term();
-           if((right.name).equals("error"))
+            nroot = new Node("op", v, new ArrayList<Node>(),null, "exp");
+            Node right = term();
+            if((right.name).equals("error"))
             {
-               right.name = "error";
+                right.name = "error";
                 return right;
             }
-           nroot.children.add(root);
-           nroot.children.add(right);
-           root = nroot;
-       }
-       return root;
-   }
-   public static Node term()
-   {
-       Node left = factor();
-       System.out.println(left.name);
-       if((left.name).equals("error"))
+            nroot.children.add(root);
+            nroot.children.add(right);
+            root = nroot;
+        }
+        return root;
+    }
+    public static Node term()
+    {
+        Node left = factor();
+        System.out.println(left.name);
+        if((left.name).equals("error"))
         {
-           left.name = "error";
+            left.name = "error";
             return left;
         }
-       Node root = left;
-       while((!scanner_output.empty()) && ((scanner_output.peek().token_value.equals("*")) || (scanner_output.peek().token_value.equals("/"))))
-       {
-           Node nroot;
-           String v = scanner_output.peek().token_value;
-           nroot = match(scanner_output.peek());
-           if((nroot.name).equals("error"))
+        Node root = left;
+        while((!scanner_output.empty()) && ((scanner_output.peek().token_value.equals("*")) || (scanner_output.peek().token_value.equals("/"))))
+        {
+            Node nroot;
+            String v = scanner_output.peek().token_value;
+            nroot = match(scanner_output.peek());
+            if((nroot.name).equals("error"))
             {
-               nroot.name = "error";
+                nroot.name = "error";
                 return nroot;
             }
-           nroot = new Node("op", v, new ArrayList<Node>(),null, "exp");
-           Node right = factor();
-           if((right.name).equals("error"))
+            nroot = new Node("op", v, new ArrayList<Node>(),null, "exp");
+            Node right = factor();
+            if((right.name).equals("error"))
             {
-               right.name = "error";
+                right.name = "error";
                 return right;
             }
-           nroot.children.add(root);
-           nroot.children.add(right);
-           root = nroot;
-       }
-       return root;
-   }
-   public static Node factor()
-   {
-       Node root = new Node();
-       root.name = "error";
-       if(!scanner_output.empty())
-       {
-        if(scanner_output.peek().token_value.equals("("))
+            nroot.children.add(root);
+            nroot.children.add(right);
+            root = nroot;
+        }
+        return root;
+    }
+    public static Node factor()
+    {
+        Node root = new Node();
+        root.name = "error";
+        if(!scanner_output.empty())
         {
-            match(scanner_output.peek());
-            root = exp();
-            if((root.name).equals("error"))
-             {
+            if(scanner_output.peek().token_value.equals("("))
+            {
+                match(scanner_output.peek());
+                root = exp();
+                if((root.name).equals("error"))
+                {
+                    root.name = "error";
+                    return root;
+                }
+                Node n = match(new Token(")","CLOSEDBRACKET"));
+                if((n.name).equals("error"))
+                {
+                    n.name = "error";
+                    return n;
+                }
+            }
+            else if(scanner_output.peek().token_type.equals("NUMBER"))
+            {
+                //System.out.println("here 1");
+                String v = scanner_output.peek().token_value;
+                match(scanner_output.peek());
+                //System.out.println("after 1 :"+ scanner_output.peek().token_value);
+                root.name = "const";
+                root.value = v;
+                root.children = null;
+                root.sibling = null;
+                root.type = "exp";
+            }
+            else if(scanner_output.peek().token_type.equals("IDENTIFIER"))
+            {
+                String v = scanner_output.peek().token_value;
+                match(scanner_output.peek());
+                root.name = "id";
+                root.value = v;
+                root.children = null;
+                root.sibling = null;
+                root.type = "exp";
+            }
+            else {
                 root.name = "error";
-                 return root;
-             }
-            Node n = match(new Token(")","CLOSEDBRACKET"));
-            if((n.name).equals("error"))
-             {
-                n.name = "error";
-                 return n;
-             }
+            }
         }
-        else if(scanner_output.peek().token_type.equals("NUMBER"))
-        {
-            //System.out.println("here 1");
-            String v = scanner_output.peek().token_value;
-            match(scanner_output.peek());
-            //System.out.println("after 1 :"+ scanner_output.peek().token_value);
-            root.name = "const";
-            root.value = v;
-            root.children = null;
-            root.sibling = null;
-            root.type = "exp";
-        }
-        else if(scanner_output.peek().token_type.equals("IDENTIFIER"))
-        {
-            String v = scanner_output.peek().token_value;
-            match(scanner_output.peek());
-            root.name = "id";
-            root.value = v;
-            root.children = null;
-            root.sibling = null;
-            root.type = "exp";
-        }
-        else {
-            root.name = "error";
-        }
-   }
-       return root;
-   }
-   public static Node read_stmt()
-   {
+        return root;
+    }
+    public static Node read_stmt()
+    {
         Node n  = new Node();
         n.name = "error";
         n = match(new Token("read","READ"));
         if((n.name).equals("error"))
-         {
+        {
             n.name = "error";
-             return n;
-         }
+            return n;
+        }
         String v = "";
         if(!scanner_output.empty())
         {
@@ -1098,38 +1151,36 @@ public class Main{
         }
         n = match(new Token("","IDENTIFIER"));
         if((n.name).equals("error"))
-         {
+        {
             n.name = "error";
-             return n;
-         }
+            return n;
+        }
         n = new Node("read", v, null, null, "stmt");
-       return n;
-   }
-      public static Node write_stmt()
-   {
+        return n;
+    }
+    public static Node write_stmt()
+    {
         Node root  = new Node();
         root.name = "error";
         root = match(new Token("write","WRITE"));
         if((root.name).equals("error"))
-         {
+        {
             root.name = "error";
-             return root;
-         }
+            return root;
+        }
         Node n = exp();
         if((n.name).equals("error"))
-         {
+        {
             n.name = "error";
-             return n;
-         }
+            return n;
+        }
         root.name = "write";
         root.value = null;
         root.children = new ArrayList<Node>();
         root.children.add(n);
         root.sibling = null;
         root.type = "stmt";
-       return root;
-   }
+        return root;
+    }
 
 }
-
-
