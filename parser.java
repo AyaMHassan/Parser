@@ -253,6 +253,38 @@ public class Main{
         window1 win1 = new window1();
 
     }
+    public mxGraph tree(Node n, int x, int y){
+        mxGraph graph = new mxGraph();
+        Object parent = graph.getDefaultParent();
+        Object v1,v2;
+        if(n == null){
+            return null;
+        }
+        if(n.type == "exp"){
+             v1 = graph.insertVertex(parent, null, n.name+"\n"+n.value,  x, y, 80, 30 , "shape=ellipse");
+        }
+        else{
+             v1 = graph.insertVertex(parent, null, n.name+"\n"+n.value,  x, y, 80, 30);
+        }
+        if (n.sibling != null) {
+            y = y + 30;
+            if(n.sibling.type == "exp"){
+                v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+n.sibling.value,  x, y, 80, 30 , "shape=ellipse");
+            }
+            else{
+                v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+n.sibling.value,  x, y, 80, 30);
+            }
+            graph.insertEdge(parent, null, "", v1, v2);
+        }
+        for(int i = 0; i < n.children.size(); i++){
+            graph.insertEdge(parent, null, "", graph, tree(n.children.get(i),x+30,y));
+        }
+        for(int i = 0; i < n.sibling.children.size(); i++){
+            graph.insertEdge(parent, null, "", graph, tree(n.sibling.children.get(i),x+30,y));
+        }
+        graph.getModel().endUpdate();
+        return graph;
+    }
     public static ArrayList<String> scanner(String s) {
         ArrayList<String> arr = new ArrayList<String>();
         String program=s;
