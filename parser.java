@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ */
 package com.company;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,12 +15,6 @@ import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxStylesheet;
-import org.jgraph.JGraph;
-import org.jgraph.graph.DefaultEdge;
-import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.DefaultGraphModel;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.GraphModel;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.*;
 import com.mxgraph.model.mxIGraphModel;
@@ -188,12 +186,12 @@ class window3 implements ActionListener{
         this.code_token = code_token;
         JFrame.setDefaultLookAndFeelDecorated(true);
         frame = new JFrame("Parser");
-        frame.setSize(600,1000);
+        frame.setSize(1000,1000);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(boxlayout);
-        panel.setSize(600,1000);
+        panel.setSize(1000,1000);
         jbtn1 = new JButton("new");
         jbtn1.addActionListener(this);
         display = new JTextArea();
@@ -201,20 +199,24 @@ class window3 implements ActionListener{
         this.flag = flag;
         mxGraph graph = new mxGraph();
         ArrayList<String> arr = Main.scanner(code_token);
+        for(int i = 0; i < arr.size(); i++)
+        {
+            System.out.print(arr.get(i));
+        }
         if(flag == 0){
-                String s="";
-                for(int i = 0; i < arr.size(); i++){
-                    s+=arr.get(i);
+            String s="";
+            for(int i = 0; i < arr.size(); i++){
+                s+=arr.get(i);
 
-                }
-                System.out.println(s);
-                if(Main.parser(arr).name.equals("error")){
-                    display.setText("Incorrect Code");
-                }
-                else {
-                    display.setText(s);
-                    graph = (mxGraph) Main.tree(Main.parser(arr), 300, 0)[0];
-                }
+            }
+            System.out.println(s);
+            if(Main.parser(arr).name.equals("error")){
+                display.setText("Incorrect Code");
+            }
+            else {
+                display.setText(s);
+                Main.tree(null, Main.parser(arr), 300, 0);
+            }
         }
         else if (flag == 1){
             if(Main.parser(arr).name.equals("error")){
@@ -222,19 +224,18 @@ class window3 implements ActionListener{
             }
             else {
                 display.setText(code_token);
-                graph = (mxGraph) Main.tree(Main.parser(arr), 300, 0)[0];
+                Main.tree(null, Main.parser(arr), 300, 0);
             }
         }
-        mxGraphComponent graphComponent = new mxGraphComponent(graph);
+        mxGraphComponent graphComponent = new mxGraphComponent(Main.graph);
         scroll2 = new JScrollPane(graphComponent);
-        scroll2.setMinimumSize(new Dimension(600, 600));
         scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll2.setMinimumSize(new Dimension(2000, 500));
         panel.add(scroll2);
         scroll1 = new JScrollPane(display);
         scroll1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll2.setMaximumSize(new Dimension(600, 200));
+//        scroll1.setMaximumSize(new Dimension(, 200));
         panel.add(scroll1);
         panel.add(jbtn1);
         frame.add(panel);
@@ -255,89 +256,59 @@ public class Main{
     static String token;
     static Object root1;
     static Object root2;
+    static mxGraph graph = new mxGraph();
+    static Object parent = graph.getDefaultParent();
     static Stack<Token> scanner_output = new Stack<>();
     public static void main(String[] args) {
         window1 win1 = new window1();
 
     }
-    public static Object[] tree(Node n, int x, int y){
+    public static void tree(Object prev, Node curr, int x, int y){
         Object result[] = new Object[2];
-        mxGraph graph = new mxGraph();
-        Object parent = graph.getDefaultParent();
         Object v1 = new mxPoint();
-        Object v2 = new mxPoint();
-        mxGraph graphTemp = new mxGraph();
-        if(n == null){
-            return null;
+//        Object v2 = new mxPoint();
+//        mxGraph graphTemp = new mxGraph();
+        if(curr == null){
+            return;
         }
-        if(n.type.equals("exp")){
-            if(n.value != null){
-                v1 = graph.insertVertex(parent, null, n.name+"\n"+"("+n.value+")",  x, y, 80, 30 , "shape=ellipse");
+        if(curr.type.equals("exp")){
+            if(curr.value != null){
+                v1 = graph.insertVertex(parent, null, curr.name+"\n"+"("+curr.value+")",  x, y, 80, 30 , "shape=ellipse");
                 root1 = v1;
             }
             else{
-                v1 = graph.insertVertex(parent, null, n.name,  x, y, 80, 30 , "shape=ellipse");
+                v1 = graph.insertVertex(parent, null, curr.name,  x, y, 80, 30 , "shape=ellipse");
                 root1 = v1;
             }
         }
         else{
-            if(n.value != null){
-                v1 = graph.insertVertex(parent, null, n.name+"\n"+"("+n.value+")",  x, y, 80, 30);
+            if(curr.value != null){
+                v1 = graph.insertVertex(parent, null, curr.name+"\n"+"("+curr.value+")",  x, y, 80, 30);
                 root1 = v1;
             }
             else{
-                v1 = graph.insertVertex(parent, null, n.name,  x, y, 80, 30);
+                v1 = graph.insertVertex(parent, null, curr.name,  x, y, 80, 30);
                 root1 = v1;
             }
         }
-        if (n.sibling != null) {
-            x = x + 100;
-            if(n.sibling.type.equals("exp")){
-                if(n.sibling.value != null){
-                    v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+"("+n.sibling.value+")",  x, y, 80, 30, "shape=ellipse");
-                    root2 = v2;
-                }
-                else{
-                    v2 = graph.insertVertex(parent, null, n.sibling.name,  x, y, 80, 30, "shape=ellipse");
-                    root2 = v2;
-                }
-            }
-            else{
-                if(n.sibling.value != null){
-                    v2 = graph.insertVertex(parent, null, n.sibling.name+"\n"+"("+n.sibling.value+")",  x, y, 80, 30);
-                    root2 = v2;
-                }
-                else{
-                    v2 = graph.insertVertex(parent, null, n.sibling.name,  x, y, 80, 30);
-                    root2 = v2;
-                }
-            }
-            graph.insertEdge(parent, null, "", v1, v2);
+        if(prev != null)
+        {
+            graph.insertEdge(parent, null, "", prev, v1);
         }
-        if(n.children != null) {
-            for (int i = 0; i < n.children.size(); i++) {
 
-                Object temp = tree(n.children.get(i), x + 90, y + 40)[1];
-                graphTemp = new mxGraph();
-                graphTemp = (mxGraph) tree(n.children.get(i), x + 90, y + 40)[0];
-                graph.insertEdge(parent, null, "", v1, temp);
+        if (curr.sibling != null) {
+            tree(v1, curr.sibling, x+140, y);
+        }
+        if(curr.children != null) {
+            for (int i = 0; i < curr.children.size(); i++) {
+                if(i%2 == 0)
+                    tree(v1, curr.children.get(i), x - 120*i, y + 100 );
+                else
+                    tree(v1, curr.children.get(i), x + (300)*i, y + 20 );
             }
         }
-        if(n.sibling != null) {
-            if (n.sibling.children != null) {
-                for (int i = 0; i < n.sibling.children.size(); i++) {
-                    Object temp = tree(n.sibling.children.get(i), x + 90, y + 40)[1];
-                    graphTemp = new mxGraph();
-                    graphTemp = (mxGraph) tree(n.sibling.children.get(i), x + 90, y + 40)[0];
-                    graph.insertEdge(parent, null, "", v2, temp);
-                }
-            }
-        }
-        graph.getModel().endUpdate();
-        result[0] = graph;
-        result[1] = v1;
-        return result;
     }
+
     public static ArrayList<String> scanner(String s) {
         ArrayList<String> arr = new ArrayList<String>();
         String program=s;
