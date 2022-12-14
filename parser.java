@@ -1,26 +1,25 @@
 /*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package main;
+
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package com.company;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
-import java.util.Hashtable;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
-import com.mxgraph.layout.mxCircleLayout;
-import com.mxgraph.util.mxConstants;
-import com.mxgraph.util.mxPoint;
-import com.mxgraph.view.mxStylesheet;
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.*;
-import com.mxgraph.model.mxIGraphModel;
-import com.mxgraph.util.mxRectangle;
-import com.mxgraph.view.mxGraph;
-import com.mxgraph.model.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.io.File;  // Import the File class
@@ -72,6 +71,7 @@ class window1 implements ActionListener{
         jbtn2 = new JButton("Enter the tokens list");
         jbtn2.addActionListener(this);
         panel.add(jbtn1);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(jbtn2);
         frame.add(panel);
         frame.pack();
@@ -124,7 +124,13 @@ class window2 implements ActionListener{
         code = display.getText();
         if(e.getSource() == jbtn1){
             frame.dispose();
-            window3 win3 = new window3(code,0);
+            try {
+                window3 win3 = new window3(code,0);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
         else if(e.getSource() == jbtn2){
             frame.dispose();
@@ -166,7 +172,13 @@ class window2_token implements ActionListener{
         token = display.getText();
         if(e.getSource() == jbtn1){
             frame.dispose();
-            window3 win3 = new window3(token,1);
+            try {
+                window3 win3 = new window3(token,1);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
         else if(e.getSource() == jbtn2){
             frame.dispose();
@@ -179,74 +191,339 @@ class window3 implements ActionListener{
     JFrame frame;
     JTextArea display;
     JScrollPane scroll1;
+    JPanel scroll3;
     JScrollPane scroll2;
     String code_token;
     int flag;
-    window3(String code_token, int flag){
-        this.code_token = code_token;
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        frame = new JFrame("Parser");
-        frame.setSize(1000,1000);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel panel = new JPanel();
-        BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-        panel.setLayout(boxlayout);
-        panel.setSize(1000,1000);
-        jbtn1 = new JButton("new");
-        jbtn1.addActionListener(this);
-        display = new JTextArea();
-        display.setEditable(false); // set textArea non-editable
-        this.flag = flag;
-        mxGraph graph = new mxGraph();
-        ArrayList<String> arr = Main.scanner(code_token);
-        for(int i = 0; i < arr.size(); i++)
-        {
-            System.out.print(arr.get(i));
-        }
-        if(flag == 0){
-            String s="";
-            for(int i = 0; i < arr.size(); i++){
-                s+=arr.get(i);
+//    window3(String code_token, int flag){
+//        this.code_token = code_token;
+//        JFrame.setDefaultLookAndFeelDecorated(true);
+//        frame = new JFrame("Parser");
+//        frame.setSize(1000,1000);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        JPanel panel = new JPanel();
+//        BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+//        panel.setLayout(boxlayout);
+//        panel.setSize(1000,1000);
+//        jbtn1 = new JButton("new");
+//        jbtn1.addActionListener(this);
+//        display = new JTextArea();
+//        display.setEditable(false); // set textArea non-editable
+//        this.flag = flag;
+//        mxGraph graph = new mxGraph();
+//        ArrayList<String> arr = Main.scanner(code_token);
+//        for(int i = 0; i < arr.size(); i++)
+//        {
+//            System.out.print(arr.get(i));
+//        }
+//        if(flag == 0){
+//            String s="";
+//            for(int i = 0; i < arr.size(); i++){
+//                s+=arr.get(i);
+//
+//
+//
+//            }
+//            System.out.println(s);
+//            if(Main.parser(arr).name.equals("error")){
+//                display.setText("Incorrect Code");
+//            }
+//            else {
+//                display.setText(s);
+//                Main.tree(null, Main.parser(arr), 500, 0,0);
+//            }
+//        }
+//        else if (flag == 1){
+//            if(Main.parser(arr).name.equals("error")){
+//                display.setText("Incorrect Code");
+//            }
+//            else {
+//                display.setText(code_token);
+//                Main.tree(null, Main.parser(arr), 500, 0,0);
+//            }
+//        }
+//        mxGraphComponent graphComponent = new mxGraphComponent(Main.graph);
+//        scroll2 = new JScrollPane(graphComponent);
+//        scroll2.setMinimumSize(new Dimension(1000, 500));
+//        scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+//        scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//
+//        panel.add(scroll2);
+//        scroll1 = new JScrollPane(display);
+//        scroll1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+////        scroll1.setMaximumSize(new Dimension(, 200));
+//        panel.add(scroll1);
+//        panel.add(jbtn1);
+//        frame.add(panel);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.pack();
+//        frame.setVisible(true);
+//    }
+JLabel picLabel;
+window3(String code_token, int flag) throws IOException, InterruptedException {
+    this.code_token = code_token;
+    JFrame.setDefaultLookAndFeelDecorated(true);
+    frame = new JFrame("Parser");
+//    frame.setSize(1000,1000);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JPanel panel = new JPanel();
+    BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+    panel.setLayout(boxlayout);
+//    panel.setSize(1000,1000);
+    jbtn1 = new JButton("new");
+    jbtn1.addActionListener(this);
+    display = new JTextArea();
+    display.setEditable(false); // set textArea non-editable
+    this.flag = flag;
+//    mxGraph graph = new mxGraph();
+    ArrayList<String> arr = new ArrayList<String>();
 
-            }
-            System.out.println(s);
-            if(Main.parser(arr).name.equals("error")){
-                display.setText("Incorrect Code");
-            }
-            else {
-                display.setText(s);
-                Main.tree(null, Main.parser(arr), 300, 0);
-            }
+    String dotFormat="digraph G {\n" +
+"0[label=\"assign\\n (x)\" shape=box]\n" +
+"1[label=\"assign\\n (y)\" shape=box]\n" +
+"0 -> 1\n" +
+"{ rank=same;0 1 }\n" +
+"2[label=\"assign\\n (z)\" shape=box]\n" +
+"1 -> 2\n" +
+"{ rank=same;1 2 }\n" +
+"3[label=\"assign\\n (a)\" shape=box]\n" +
+"2 -> 3\n" +
+"{ rank=same;2 3 }\n" +
+"4[label=\"if\" shape=box]\n" +
+"3 -> 4\n" +
+"{ rank=same;3 4 }\n" +
+"5[label=\"op\\n (<)\" shape=\"circle\"]\n" +
+"4 -> 5\n" +
+"6[label=\"id\\n (z)\" shape=\"circle\"]\n" +
+"5 -> 6\n" +
+"7[label=\"const\\n (8)\" shape=\"circle\"]\n" +
+"5 -> 7\n" +
+"8[label=\"repeat\" shape=box]\n" +
+"4 -> 8\n" +
+"9[label=\"write\" shape=box]\n" +
+"8 -> 9\n" +
+"{ rank=same;8 9 }\n" +
+"10[label=\"read\\n (b)\" shape=box]\n" +
+"9 -> 10\n" +
+"{ rank=same;9 10 }\n" +
+"11[label=\"id\\n (a)\" shape=\"circle\"]\n" +
+"9 -> 11\n" +
+"12[label=\"assign\\n (a)\" shape=box]\n" +
+"8 -> 12\n" +
+"13[label=\"assign\\n (z)\" shape=box]\n" +
+"12 -> 13\n" +
+"{ rank=same;12 13 }\n" +
+"14[label=\"repeat\" shape=box]\n" +
+"13 -> 14\n" +
+"{ rank=same;13 14 }\n" +
+"15[label=\"read\\n (x)\" shape=box]\n" +
+"14 -> 15\n" +
+"16[label=\"write\" shape=box]\n" +
+"15 -> 16\n" +
+"{ rank=same;15 16 }\n" +
+"17[label=\"if\" shape=box]\n" +
+"16 -> 17\n" +
+"{ rank=same;16 17 }\n" +
+"18[label=\"op\\n (<)\" shape=\"circle\"]\n" +
+"17 -> 18\n" +
+"19[label=\"id\\n (x)\" shape=\"circle\"]\n" +
+"18 -> 19\n" +
+"20[label=\"const\\n (4)\" shape=\"circle\"]\n" +
+"18 -> 20\n" +
+"21[label=\"assign\\n (x)\" shape=box]\n" +
+"17 -> 21\n" +
+"22[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"21 -> 22\n" +
+"23[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"22 -> 23\n" +
+"24[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"23 -> 24\n" + 
+"25[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"24 -> 25\n" +
+"26[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"25 -> 26\n" +
+"27[label=\"id\\n (x)\" shape=\"circle\"]\n" +
+"26 -> 27\n" +
+"28[label=\"const\\n (1)\" shape=\"circle\"]\n" +
+"26 -> 28\n" +
+"29[label=\"const\\n (2)\" shape=\"circle\"]\n" +
+"25 -> 29\n" +
+"30[label=\"const\\n (3)\" shape=\"circle\"]\n" +
+"24 -> 30\n" +
+"31[label=\"const\\n (4)\" shape=\"circle\"]\n" +
+"23 -> 31\n" +
+"32[label=\"const\\n (5)\" shape=\"circle\"]\n" +
+"22 -> 32\n" +
+"33[label=\"assign\\n (x)\" shape=box]\n" +
+"17 -> 33\n" +
+"34[label=\"op\\n (-)\" shape=\"circle\"]\n" +
+"33 -> 34\n" +
+"35[label=\"id\\n (x)\" shape=\"circle\"]\n" +
+"34 -> 35\n" +
+"36[label=\"const\\n (1)\" shape=\"circle\"]\n" +
+"34 -> 36\n" +
+"37[label=\"id\\n (x)\" shape=\"circle\"]\n" +
+"16 -> 37\n" +
+"38[label=\"op\\n (<)\" shape=\"circle\"]\n" +
+"14 -> 38\n" +
+"39[label=\"id\\n (x)\" shape=\"circle\"]\n" +
+"38 -> 39\n" +
+"40[label=\"const\\n (5)\" shape=\"circle\"]\n" +
+"38 -> 40\n" +
+"41[label=\"op\\n (-)\" shape=\"circle\"]\n" +
+"13 -> 41\n" +
+"42[label=\"id\\n (z)\" shape=\"circle\"]\n" +
+"41 -> 42\n" +
+"43[label=\"const\\n (1)\" shape=\"circle\"]\n" +
+"41 -> 43\n" +
+"44[label=\"op\\n (/)\" shape=\"circle\"]\n" +
+"12 -> 44\n" +
+"45[label=\"id\\n (a)\" shape=\"circle\"]\n" +
+"44 -> 45\n" +
+"46[label=\"const\\n (2)\" shape=\"circle\"]\n" +
+"44 -> 46\n" +
+"47[label=\"op\\n (=)\" shape=\"circle\"]\n" +
+"8 -> 47\n" +
+"48[label=\"id\\n (z)\" shape=\"circle\"]\n" +
+"47 -> 48\n" +
+"49[label=\"const\\n (0)\" shape=\"circle\"]\n" +
+"47 -> 49\n" +
+"50[label=\"read\\n (b)\" shape=box]\n" +
+"4 -> 50\n" +
+"51[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"3 -> 51\n" +
+"52[label=\"op\\n (-)\" shape=\"circle\"]\n" +
+"51 -> 52\n" +
+"53[label=\"op\\n (-)\" shape=\"circle\"]\n" +
+"52 -> 53\n" +
+"54[label=\"id\\n (x)\" shape=\"circle\"]\n" +
+"53 -> 54\n" +
+"55[label=\"id\\n (y)\" shape=\"circle\"]\n" +
+"53 -> 55\n" +
+"56[label=\"id\\n (z)\" shape=\"circle\"]\n" +
+"52 -> 56\n" +
+"57[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"51 -> 57\n" +
+"58[label=\"op\\n (+)\" shape=\"circle\"]\n" +
+"57 -> 58\n" +
+"59[label=\"const\\n (2)\" shape=\"circle\"]\n" +
+"58 -> 59\n" +
+"60[label=\"const\\n (1)\" shape=\"circle\"]\n" +
+"58 -> 60\n" +
+"61[label=\"const\\n (3)\" shape=\"circle\"]\n" +
+"57 -> 61\n" +
+"62[label=\"const\\n (5)\" shape=\"circle\"]\n" +
+"2 -> 62\n" +
+"63[label=\"const\\n (32436)\" shape=\"circle\"]\n" +
+"1 -> 63\n" +
+"64[label=\"const\\n (2)\" shape=\"circle\"]\n" +
+"0 -> 64\n" +
+"\n" +
+" \n" +
+"\n" +
+"}";
+    if(flag == 0){
+        arr = Main.scanner(code_token);
+        String s="";
+        for(int i = 0; i < arr.size(); i++){
+            s+=arr.get(i);
         }
-        else if (flag == 1){
-            if(Main.parser(arr).name.equals("error")){
-                display.setText("Incorrect Code");
-            }
-            else {
-                display.setText(code_token);
-                Main.tree(null, Main.parser(arr), 300, 0);
-            }
+        System.out.println(s);
+        if(Main.parser(arr).name.equals("error")){
+            display.setText("Incorrect Code");
         }
-        mxGraphComponent graphComponent = new mxGraphComponent(Main.graph);
-        scroll2 = new JScrollPane(graphComponent);
+        else{
+            display.setText(s);
+            //dotFormat = Main.parser(arr)
+            writeDotSourceToFile(dotFormat);
+            System.out.println( System.getProperty("user.dir"));
+            String command = "dot -Tpng -O "+ System.getProperty("user.dir")+"\\dotsource.dot";
+            System.out.println( command);
+            Process proc = Runtime.getRuntime().exec(command);
+            Thread.sleep(1000);
+            BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"\\dotsource.dot.png"));
+            picLabel = new JLabel(new ImageIcon(myPicture));
+        }
+    }
+    else if (flag == 1){
+        System.out.println(code_token);
+        arr = Main.correct_scanner(code_token);
+        for(int i = 0; i < arr.size(); i++){
+            System.out.println(arr.get(i));
+        }
+        if(Main.parser(arr).name.equals("error")){
+            display.setText("Incorrect Code");
+        }
+        else {
+            //dotFormat = Main.parser(arr)
+            display.setText(code_token);
+            writeDotSourceToFile(dotFormat);
+            String command = "dot -Tpng -O \\"+ System.getProperty("user.dir")+"\\"+"dotsource.dot";
+            Process proc = Runtime.getRuntime().exec(command);
+            Thread.sleep(1000);
+            BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"\\dotsource.dot.png"));
+            picLabel = new JLabel(new ImageIcon(myPicture));
+        }
+    }
+    if(!Main.parser(arr).name.equals("error")){
+        scroll2 = new JScrollPane(picLabel);
+        //scroll2.setMinimumSize(new Dimension(1000, 500));
         scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll2.setMinimumSize(new Dimension(2000, 500));
         panel.add(scroll2);
         scroll1 = new JScrollPane(display);
         scroll1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//        scroll1.setMaximumSize(new Dimension(, 200));
+        scroll1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        //scroll1.setMinimumSize(new Dimension(1000, 200));
         panel.add(scroll1);
         panel.add(jbtn1);
+        panel.setPreferredSize(new Dimension(1000,1000));
         frame.add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
+    else{
+        frame = new JFrame("Error");
+        frame.setSize(300,80);
+        JPanel panel2 = new JPanel();
+        //BoxLayout boxlayout2 = new BoxLayout(panel2, BoxLayout.Y_AXIS);
+        //panel2.setLayout(new FlowLayout(FlowLayout.CENTER));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JLabel label = new JLabel("Incorrect code");
+        //label.setHorizontalAlignment(JLabel.CENTER);
+        jbtn1.setLayout(new FlowLayout(FlowLayout.CENTER));
+        label.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel2.add(label);
+        panel2.add(Box.createRigidArea(new Dimension(0, 5)));
+        panel2.add(jbtn1);
+        frame.add(panel2);
+        frame.setVisible(true);
+    }
+
+}
+    private static void  writeDotSourceToFile(String str) throws java.io.IOException
+    {
+        File temp;
+        try {
+            temp = File.createTempFile("dotsource","dot", new File(System.getProperty("user.dir")));
+            FileWriter fout = new FileWriter(temp);
+            fout.write(str);
+            BufferedWriter br=new BufferedWriter(new FileWriter("dotsource.dot"));
+            br.write(str);
+            br.flush();
+            br.close();
+            fout.close();
+        }
+        catch (Exception e) {
+            System.err.println("Error: I/O error while writing the dot source to temp file!");
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbtn1){
+            frame.dispose();
             window1 win1 = new window1();
         }
     }
@@ -256,14 +533,10 @@ public class Main{
     static String token;
     static Object root1;
     static Object root2;
-    static mxGraph graph = new mxGraph();
-    static Object parent = graph.getDefaultParent();
+//    static mxGraph graph = new mxGraph();
+//    static Object parent = graph.getDefaultParent();
     static Stack<Token> scanner_output = new Stack<>();
-    public static void main(String[] args) {
-        window1 win1 = new window1();
-
-    }
-     public static ArrayList<String> correct_scanner(String s){
+      public static ArrayList<String> correct_scanner(String s){
         ArrayList<String> sc=new ArrayList<String>();
         String r="";
         for(int i=0;i<s.length();i++){
@@ -292,50 +565,11 @@ public class Main{
         
         return sc;
     }
-    public static void tree(Object prev, Node curr, int x, int y){
-        Object result[] = new Object[2];
-        Object v1 = new mxPoint();
-//        Object v2 = new mxPoint();
-//        mxGraph graphTemp = new mxGraph();
-        if(curr == null){
-            return;
-        }
-        if(curr.type.equals("exp")){
-            if(curr.value != null){
-                v1 = graph.insertVertex(parent, null, curr.name+"\n"+"("+curr.value+")",  x, y, 80, 30 , "shape=ellipse");
-                root1 = v1;
-            }
-            else{
-                v1 = graph.insertVertex(parent, null, curr.name,  x, y, 80, 30 , "shape=ellipse");
-                root1 = v1;
-            }
-        }
-        else{
-            if(curr.value != null){
-                v1 = graph.insertVertex(parent, null, curr.name+"\n"+"("+curr.value+")",  x, y, 80, 30);
-                root1 = v1;
-            }
-            else{
-                v1 = graph.insertVertex(parent, null, curr.name,  x, y, 80, 30);
-                root1 = v1;
-            }
-        }
-        if(prev != null)
-        {
-            graph.insertEdge(parent, null, "", prev, v1);
-        }
+    public static void main(String[] args) {
+        window1 win1 = new window1();
 
-        if (curr.sibling != null) {
-            tree(v1, curr.sibling, x+140, y);
-        }
-        if(curr.children != null) {
-            for (int i = 0; i < curr.children.size(); i++) {
-                if(i%2 == 0)
-                    tree(v1, curr.children.get(i), x - 120*i, y + 100 );
-                else
-                    tree(v1, curr.children.get(i), x + (300)*i, y + 20 );
-            }
-        }
+
+
     }
 
     public static ArrayList<String> scanner(String s) {
