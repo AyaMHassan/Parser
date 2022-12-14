@@ -263,6 +263,35 @@ public class Main{
         window1 win1 = new window1();
 
     }
+     public static ArrayList<String> correct_scanner(String s){
+        ArrayList<String> sc=new ArrayList<String>();
+        String r="";
+        for(int i=0;i<s.length();i++){
+            
+            if(s.charAt(i)==' ') continue;
+            else if(s.charAt(i)==',') {
+                r+=" , ";
+                continue;
+            }
+            else if(s.charAt(i)=='\n'){
+                r+="\n";
+                sc.add(r);
+                r="";
+                continue;
+            } 
+            r+=s.charAt(i);
+                
+        }
+        if (!r.equals("") &&(r.charAt(r.length()-1)!='\n')) {
+            r+='\n';
+            sc.add(r);
+            r="";
+        }
+        else if(!r.equals(""))  sc.add(r);
+        
+        
+        return sc;
+    }
     public static void tree(Object prev, Node curr, int x, int y){
         Object result[] = new Object[2];
         Object v1 = new mxPoint();
