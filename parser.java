@@ -278,150 +278,7 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
 //    mxGraph graph = new mxGraph();
     ArrayList<String> arr = new ArrayList<String>();
 
-    String dotFormat="digraph G {\n" +
-"0[label=\"assign\\n (x)\" shape=box]\n" +
-"1[label=\"assign\\n (y)\" shape=box]\n" +
-"0 -> 1\n" +
-"{ rank=same;0 1 }\n" +
-"2[label=\"assign\\n (z)\" shape=box]\n" +
-"1 -> 2\n" +
-"{ rank=same;1 2 }\n" +
-"3[label=\"assign\\n (a)\" shape=box]\n" +
-"2 -> 3\n" +
-"{ rank=same;2 3 }\n" +
-"4[label=\"if\" shape=box]\n" +
-"3 -> 4\n" +
-"{ rank=same;3 4 }\n" +
-"5[label=\"op\\n (<)\" shape=\"circle\"]\n" +
-"4 -> 5\n" +
-"6[label=\"id\\n (z)\" shape=\"circle\"]\n" +
-"5 -> 6\n" +
-"7[label=\"const\\n (8)\" shape=\"circle\"]\n" +
-"5 -> 7\n" +
-"8[label=\"repeat\" shape=box]\n" +
-"4 -> 8\n" +
-"9[label=\"write\" shape=box]\n" +
-"8 -> 9\n" +
-"{ rank=same;8 9 }\n" +
-"10[label=\"read\\n (b)\" shape=box]\n" +
-"9 -> 10\n" +
-"{ rank=same;9 10 }\n" +
-"11[label=\"id\\n (a)\" shape=\"circle\"]\n" +
-"9 -> 11\n" +
-"12[label=\"assign\\n (a)\" shape=box]\n" +
-"8 -> 12\n" +
-"13[label=\"assign\\n (z)\" shape=box]\n" +
-"12 -> 13\n" +
-"{ rank=same;12 13 }\n" +
-"14[label=\"repeat\" shape=box]\n" +
-"13 -> 14\n" +
-"{ rank=same;13 14 }\n" +
-"15[label=\"read\\n (x)\" shape=box]\n" +
-"14 -> 15\n" +
-"16[label=\"write\" shape=box]\n" +
-"15 -> 16\n" +
-"{ rank=same;15 16 }\n" +
-"17[label=\"if\" shape=box]\n" +
-"16 -> 17\n" +
-"{ rank=same;16 17 }\n" +
-"18[label=\"op\\n (<)\" shape=\"circle\"]\n" +
-"17 -> 18\n" +
-"19[label=\"id\\n (x)\" shape=\"circle\"]\n" +
-"18 -> 19\n" +
-"20[label=\"const\\n (4)\" shape=\"circle\"]\n" +
-"18 -> 20\n" +
-"21[label=\"assign\\n (x)\" shape=box]\n" +
-"17 -> 21\n" +
-"22[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"21 -> 22\n" +
-"23[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"22 -> 23\n" +
-"24[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"23 -> 24\n" + 
-"25[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"24 -> 25\n" +
-"26[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"25 -> 26\n" +
-"27[label=\"id\\n (x)\" shape=\"circle\"]\n" +
-"26 -> 27\n" +
-"28[label=\"const\\n (1)\" shape=\"circle\"]\n" +
-"26 -> 28\n" +
-"29[label=\"const\\n (2)\" shape=\"circle\"]\n" +
-"25 -> 29\n" +
-"30[label=\"const\\n (3)\" shape=\"circle\"]\n" +
-"24 -> 30\n" +
-"31[label=\"const\\n (4)\" shape=\"circle\"]\n" +
-"23 -> 31\n" +
-"32[label=\"const\\n (5)\" shape=\"circle\"]\n" +
-"22 -> 32\n" +
-"33[label=\"assign\\n (x)\" shape=box]\n" +
-"17 -> 33\n" +
-"34[label=\"op\\n (-)\" shape=\"circle\"]\n" +
-"33 -> 34\n" +
-"35[label=\"id\\n (x)\" shape=\"circle\"]\n" +
-"34 -> 35\n" +
-"36[label=\"const\\n (1)\" shape=\"circle\"]\n" +
-"34 -> 36\n" +
-"37[label=\"id\\n (x)\" shape=\"circle\"]\n" +
-"16 -> 37\n" +
-"38[label=\"op\\n (<)\" shape=\"circle\"]\n" +
-"14 -> 38\n" +
-"39[label=\"id\\n (x)\" shape=\"circle\"]\n" +
-"38 -> 39\n" +
-"40[label=\"const\\n (5)\" shape=\"circle\"]\n" +
-"38 -> 40\n" +
-"41[label=\"op\\n (-)\" shape=\"circle\"]\n" +
-"13 -> 41\n" +
-"42[label=\"id\\n (z)\" shape=\"circle\"]\n" +
-"41 -> 42\n" +
-"43[label=\"const\\n (1)\" shape=\"circle\"]\n" +
-"41 -> 43\n" +
-"44[label=\"op\\n (/)\" shape=\"circle\"]\n" +
-"12 -> 44\n" +
-"45[label=\"id\\n (a)\" shape=\"circle\"]\n" +
-"44 -> 45\n" +
-"46[label=\"const\\n (2)\" shape=\"circle\"]\n" +
-"44 -> 46\n" +
-"47[label=\"op\\n (=)\" shape=\"circle\"]\n" +
-"8 -> 47\n" +
-"48[label=\"id\\n (z)\" shape=\"circle\"]\n" +
-"47 -> 48\n" +
-"49[label=\"const\\n (0)\" shape=\"circle\"]\n" +
-"47 -> 49\n" +
-"50[label=\"read\\n (b)\" shape=box]\n" +
-"4 -> 50\n" +
-"51[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"3 -> 51\n" +
-"52[label=\"op\\n (-)\" shape=\"circle\"]\n" +
-"51 -> 52\n" +
-"53[label=\"op\\n (-)\" shape=\"circle\"]\n" +
-"52 -> 53\n" +
-"54[label=\"id\\n (x)\" shape=\"circle\"]\n" +
-"53 -> 54\n" +
-"55[label=\"id\\n (y)\" shape=\"circle\"]\n" +
-"53 -> 55\n" +
-"56[label=\"id\\n (z)\" shape=\"circle\"]\n" +
-"52 -> 56\n" +
-"57[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"51 -> 57\n" +
-"58[label=\"op\\n (+)\" shape=\"circle\"]\n" +
-"57 -> 58\n" +
-"59[label=\"const\\n (2)\" shape=\"circle\"]\n" +
-"58 -> 59\n" +
-"60[label=\"const\\n (1)\" shape=\"circle\"]\n" +
-"58 -> 60\n" +
-"61[label=\"const\\n (3)\" shape=\"circle\"]\n" +
-"57 -> 61\n" +
-"62[label=\"const\\n (5)\" shape=\"circle\"]\n" +
-"2 -> 62\n" +
-"63[label=\"const\\n (32436)\" shape=\"circle\"]\n" +
-"1 -> 63\n" +
-"64[label=\"const\\n (2)\" shape=\"circle\"]\n" +
-"0 -> 64\n" +
-"\n" +
-" \n" +
-"\n" +
-"}";
+    String dotFormat="";
     if(flag == 0){
         arr = Main.scanner(code_token);
         String s="";
@@ -434,7 +291,9 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
         }
         else{
             display.setText(s);
-            //dotFormat = Main.parser(arr)
+            Main.gtree(0, null, Main.parser(arr), 0);
+            Main.change_digraph();
+            dotFormat = Main.digraph;
             writeDotSourceToFile(dotFormat);
             System.out.println( System.getProperty("user.dir"));
             String command = "dot -Tpng -O "+ System.getProperty("user.dir")+"\\dotsource.dot";
@@ -455,7 +314,9 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else {
-            //dotFormat = Main.parser(arr)
+            Main.gtree(0, null, Main.parser(arr), 0);
+            Main.change_digraph();
+            dotFormat = Main.digraph;
             display.setText(code_token);
             writeDotSourceToFile(dotFormat);
             String command = "dot -Tpng -O \\"+ System.getProperty("user.dir")+"\\"+"dotsource.dot";
@@ -533,9 +394,85 @@ public class Main{
     static String token;
     static Object root1;
     static Object root2;
-//    static mxGraph graph = new mxGraph();
-//    static Object parent = graph.getDefaultParent();
+    static mxGraph graph = new mxGraph();
+    static Object parent = graph.getDefaultParent();
     static Stack<Token> scanner_output = new Stack<>();
+    static String digraph ="digraph G {\n";
+    static int index = 0;
+    static Dictionary parent_child = new Hashtable();
+    
+    public static void gtree(int i, Node prev, Node curr, int s){
+        if(curr == null){
+            return;
+        }
+        int k = index;
+        if(s == 0)
+        {
+            if(!(i == 0 && k ==0))
+                parent_child.put(i, parent_child.get(i)+Integer.toString(k)+"->");
+        }
+        index++;
+        String shape = "";
+        if(curr.type.equals("stmt"))
+            shape = " shape=box]\n";
+        else
+            shape = " shape=\"circle\"]\n";
+        if(curr.value != null)    
+            digraph =digraph + k+"[label="+"\""+curr.name+"\\n"+" ("+curr.value+")"+"\""+shape;
+        else
+            digraph =digraph + k+"[label="+"\""+curr.name+"\""+shape;
+        if(prev != null)
+        {
+            System.out.println("("+prev.name+","+prev.value+")" +" -> "+"("+curr.name+","+curr.value+")");
+            //digraph = digraph +prev.name+"[label=\""+prev.name+"(" +prev.value+ ")\"]" +" -> "+curr.name+"[label="+curr.name+"\n(" +curr.value+ ")]\n";
+            digraph = digraph +i+" -> "+  (k)+"\n";
+            String p, c;
+            if((prev.type).equals("stmt"))
+            {
+                p = "[shape=box]";
+            }
+            else p ="";
+            if((curr.type).equals("stmt"))
+            {
+                c = "[shape=box]";
+            }
+            else c ="";
+            //digraph = digraph + prev.name+p +" -> "+curr.name+c+"\n";
+            if(s == 1)
+            {
+                digraph = digraph + "{ rank=same;" +i+" "+k+" }\n";
+            }
+            // "[label="+prev.name+"\n(" +prev.value+ ")]"
+        }
+        
+        if(curr.children != null) {
+            parent_child.put(k,"");
+            for (int j = 0; j < curr.children.size(); j++) {
+                gtree((k), curr, curr.children.get(j),0);
+            }
+        }
+        if (curr.sibling != null) {
+            gtree((k), curr, curr.sibling,1);
+        }
+    }
+    public static void change_digraph()
+    {
+        System.out.println("here");
+        System.out.println(parent_child);
+        //digraph = digraph + "{ rank=same;\nedge[ style=invis];"++"rankdir = LR;}" 1->2->5->
+        Enumeration keys = parent_child.keys();
+        while (keys.hasMoreElements()) { 
+            int k = (int) keys.nextElement(); 
+            String v = (String)parent_child.get(k);
+            System.out.println(v);
+            if(v.length() > 2)
+            {
+                v = v.substring(0, v.length()-2);
+                digraph = digraph + "{ rank=same;\nedge[ style=invis];"+v+";\n rankdir = LR;}\n";
+            }
+        }
+    }
+    
       public static ArrayList<String> correct_scanner(String s){
         ArrayList<String> sc=new ArrayList<String>();
         String r="";
