@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package main;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
+
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,7 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-
+import java.util.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.io.File;  // Import the File class
@@ -394,8 +388,6 @@ public class Main{
     static String token;
     static Object root1;
     static Object root2;
-    static mxGraph graph = new mxGraph();
-    static Object parent = graph.getDefaultParent();
     static Stack<Token> scanner_output = new Stack<>();
     static String digraph ="digraph G {\n";
     static int index = 0;
