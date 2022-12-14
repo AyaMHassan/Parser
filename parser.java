@@ -284,27 +284,22 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else{
-            if(Main.b == true){
-            System.out.println("check");
-            String command0 = "cd "+System.getProperty("user.dir");
-            Process proc0 = Runtime.getRuntime().exec(command0);
-            System.out.println(command0);
-            String command1 = "del "+"\\dotsource.dot";
-            System.out.println(command1);
-            Process proc1 = Runtime.getRuntime().exec(command1);
-            String command2 = "del "+"\\dotsource.dot.png";
-            Process proc2 = Runtime.getRuntime().exec(command2);
-            }
-            Main.b = true;
             display.setText(s);
+            Main.digraph = "digraph G {\n";
+            Main.index = 0;
+            Main.parent_child = new Hashtable();
+            
+            //dotFormat = "";
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
+      
             dotFormat = Main.digraph+"}";
             writeDotSourceToFile(dotFormat);
             System.out.println( System.getProperty("user.dir"));
-            
             String command = "dot -Tpng -O "+ System.getProperty("user.dir")+"\\dotsource.dot";
-            System.out.println( command);
+            System.out.println(command);
+            
+            System.out.println(dotFormat);
             Process proc = Runtime.getRuntime().exec(command);
             Thread.sleep(1000);
             BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"\\dotsource.dot.png"));
@@ -321,21 +316,14 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else {
-            if(Main.b == true){
-            System.out.println("check");
-            String command0 = "cd "+System.getProperty("user.dir");
-            Process proc0 = Runtime.getRuntime().exec(command0);
-            System.out.println(command0);
-            String command1 = "del "+"\\dotsource.dot";
-            System.out.println(command1);
-            Process proc1 = Runtime.getRuntime().exec(command1);
-            String command2 = "del "+"\\dotsource.dot.png";
-            Process proc2 = Runtime.getRuntime().exec(command2);
-            }
-            Main.b = true;
+            Main.digraph = "digraph G {\n";
+            Main.index = 0;
+            Main.parent_child = new Hashtable();
+            //dotFormat = "";
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
             dotFormat = Main.digraph+"}";
+            System.out.println(dotFormat);
             display.setText(code_token);
             writeDotSourceToFile(dotFormat);
             String command = "dot -Tpng -O \\"+ System.getProperty("user.dir")+"\\"+"dotsource.dot";
@@ -409,7 +397,6 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
     }
 }
 public class Main{
-    static boolean b = false;
     static String code;
     static String token;
     static Object root1;
