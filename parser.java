@@ -301,7 +301,9 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             
             System.out.println(dotFormat);
             Process proc = Runtime.getRuntime().exec(command);
-            Thread.sleep(5000);
+            int i = 70*arr.size();
+            Thread.sleep(i);
+            System.out.println(arr.size());
             BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"\\dotsource.dot.png"));
             picLabel = new JLabel(new ImageIcon(myPicture));
         }
@@ -316,6 +318,7 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else {
+            display.setText(code_token);
             Main.digraph = "digraph G {\n";
             Main.index = 0;
             Main.parent_child = new Hashtable();
@@ -323,12 +326,17 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
             dotFormat = Main.digraph+"}";
-            System.out.println(dotFormat);
-            display.setText(code_token);
+            
+            
             writeDotSourceToFile(dotFormat);
-            String command = "dot -Tpng -O \\"+ System.getProperty("user.dir")+"\\"+"dotsource.dot";
+            System.out.println(System.getProperty("user.dir"));
+            String command = "dot -Tpng -O "+ System.getProperty("user.dir")+"\\"+"dotsource.dot";
+            System.out.println(command);
+            System.out.println(dotFormat);
             Process proc = Runtime.getRuntime().exec(command);
-            Thread.sleep(5000);
+            int i = 70*arr.size();
+            Thread.sleep(i);
+            System.out.println(arr.size());
             BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"\\dotsource.dot.png"));
             picLabel = new JLabel(new ImageIcon(myPicture));
         }
