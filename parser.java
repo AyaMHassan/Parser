@@ -301,7 +301,7 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             
             System.out.println(dotFormat);
             Process proc = Runtime.getRuntime().exec(command);
-            Thread.sleep(1000);
+            Thread.sleep(5000);
             BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"\\dotsource.dot.png"));
             picLabel = new JLabel(new ImageIcon(myPicture));
         }
@@ -328,14 +328,14 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             writeDotSourceToFile(dotFormat);
             String command = "dot -Tpng -O \\"+ System.getProperty("user.dir")+"\\"+"dotsource.dot";
             Process proc = Runtime.getRuntime().exec(command);
-            Thread.sleep(1000);
+            Thread.sleep(5000);
             BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"\\dotsource.dot.png"));
             picLabel = new JLabel(new ImageIcon(myPicture));
         }
     }
     if(!Main.parser(arr).name.equals("error")){
         scroll2 = new JScrollPane(picLabel);
-        //scroll2.setMinimumSize(new Dimension(1000, 500));
+        scroll2.setMinimumSize(new Dimension(1000, 600));
         scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         panel.add(scroll2);
