@@ -284,12 +284,17 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else{
+            String command0 = "del "+ System.getProperty("user.dir")+"\\dotsource.dot";
+            Process proc0 = Runtime.getRuntime().exec(command0);
+            String command1 = "del "+ System.getProperty("user.dir")+"\\dotsource.dot.png";
+            Process proc1 = Runtime.getRuntime().exec(command1);
             display.setText(s);
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
             dotFormat = Main.digraph+"}";
             writeDotSourceToFile(dotFormat);
             System.out.println( System.getProperty("user.dir"));
+            
             String command = "dot -Tpng -O "+ System.getProperty("user.dir")+"\\dotsource.dot";
             System.out.println( command);
             Process proc = Runtime.getRuntime().exec(command);
@@ -308,6 +313,10 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else {
+            String command0 = "del "+ System.getProperty("user.dir")+"\\dotsource.dot";
+            Process proc0 = Runtime.getRuntime().exec(command0);
+            String command1 = "del "+ System.getProperty("user.dir")+"\\dotsource.png";
+            Process proc1 = Runtime.getRuntime().exec(command1);
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
             dotFormat = Main.digraph+"}";
