@@ -293,7 +293,7 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText(s);
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
-            dotFormat = Main.digraph;
+            dotFormat = Main.digraph+"}";
             writeDotSourceToFile(dotFormat);
             System.out.println( System.getProperty("user.dir"));
             String command = "dot -Tpng -O "+ System.getProperty("user.dir")+"\\dotsource.dot";
@@ -316,7 +316,7 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
         else {
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
-            dotFormat = Main.digraph;
+            dotFormat = Main.digraph+"}";
             display.setText(code_token);
             writeDotSourceToFile(dotFormat);
             String command = "dot -Tpng -O \\"+ System.getProperty("user.dir")+"\\"+"dotsource.dot";
