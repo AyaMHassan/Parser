@@ -284,10 +284,18 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else{
-            String command0 = "del "+ System.getProperty("user.dir")+"\\dotsource.dot";
+            if(Main.b == true){
+            System.out.println("check");
+            String command0 = "cd "+System.getProperty("user.dir");
             Process proc0 = Runtime.getRuntime().exec(command0);
-            String command1 = "del "+ System.getProperty("user.dir")+"\\dotsource.dot.png";
+            System.out.println(command0);
+            String command1 = "del "+"\\dotsource.dot";
+            System.out.println(command1);
             Process proc1 = Runtime.getRuntime().exec(command1);
+            String command2 = "del "+"\\dotsource.dot.png";
+            Process proc2 = Runtime.getRuntime().exec(command2);
+            }
+            Main.b = true;
             display.setText(s);
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
@@ -313,10 +321,18 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
             display.setText("Incorrect Code");
         }
         else {
-            String command0 = "del "+ System.getProperty("user.dir")+"\\dotsource.dot";
+            if(Main.b == true){
+            System.out.println("check");
+            String command0 = "cd "+System.getProperty("user.dir");
             Process proc0 = Runtime.getRuntime().exec(command0);
-            String command1 = "del "+ System.getProperty("user.dir")+"\\dotsource.png";
+            System.out.println(command0);
+            String command1 = "del "+"\\dotsource.dot";
+            System.out.println(command1);
             Process proc1 = Runtime.getRuntime().exec(command1);
+            String command2 = "del "+"\\dotsource.dot.png";
+            Process proc2 = Runtime.getRuntime().exec(command2);
+            }
+            Main.b = true;
             Main.gtree(0, null, Main.parser(arr), 0);
             Main.change_digraph();
             dotFormat = Main.digraph+"}";
@@ -393,6 +409,7 @@ window3(String code_token, int flag) throws IOException, InterruptedException {
     }
 }
 public class Main{
+    static boolean b = false;
     static String code;
     static String token;
     static Object root1;
