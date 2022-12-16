@@ -976,6 +976,10 @@ public class Main{
                 state="START";
             }
         }
+        if(!token.equals("")){
+            String temp=token+" , "+type+"\n";
+                arr.add(temp);
+        }
         return arr;
     }
     public static String read(String path) throws FileNotFoundException, IOException {
