@@ -1009,6 +1009,8 @@ public class Main{
             scanner_output.push(t);
         }
         Node m=stmt_sequence();
+        if(!stmt_sequence().name.equals("error")) return new Node("error", null, null, null, null);
+//        if(!scanner_output.empty()) return new Node("error", null, null, null, null);
         return m;
     }
     public static Node match(Token expected_token)
@@ -1048,6 +1050,9 @@ public class Main{
             temp=s;
 
         }
+        //if(!statement().name.equals("error")) return new Node("error", null, null, null, null);
+        //if(!scanner_output.empty()) return new Node("error", null, null, null, null);
+        //System.out.println("stack:  "+scanner_output.size());
 
         return n;
     }
